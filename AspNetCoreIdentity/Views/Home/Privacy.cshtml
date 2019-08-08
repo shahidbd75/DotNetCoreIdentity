@@ -3,4 +3,12 @@
 }
 <h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<p>Authenticated!</p>
+
+
+<ul class="list-group">
+    @foreach (var claim in User.Claims)
+    {
+        <li class="list-group-item"><b>@claim.Type : </b> @claim.Value</li>
+    }
+</ul>
