@@ -33,7 +33,8 @@ namespace AspNetCoreIdentity
 
             services.AddAuthentication("cookies").AddCookie("cookies", (options) => options.LoginPath = "/Home/Login");
 
-            services.AddScoped<IUserStore<User>, UserRepository>();
+            //services.AddScoped<IUserStore<User>, UserRepository>();
+            services.AddScoped<IUserStore<IdentityUser>, CustomIdentityUserRepository>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
