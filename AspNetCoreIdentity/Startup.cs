@@ -1,10 +1,13 @@
-﻿using AspNetCoreIdentity.DataAccess;
+﻿using System.Reflection;
+using AspNetCoreIdentity.DataAccess;
 using AspNetCoreIdentity.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -29,12 +32,25 @@ namespace AspNetCoreIdentity
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddIdentityCore<User>(options => { });
+//            services.AddIdentityCore<User>(options => { });
 
             services.AddAuthentication("cookies").AddCookie("cookies", (options) => options.LoginPath = "/Home/Login");
 
             //services.AddScoped<IUserStore<User>, UserRepository>();
-            services.AddScoped<IUserStore<IdentityUser>, CustomIdentityUserRepository>();
+            //services.AddScoped<IUserStore<IdentityUser>, CustomIdentityUserRepository>();
+
+            //For EntityFrameworkCore
+
+            string connectionString ="Data Source=.;Initial Catalog=IdentityUserDb;Integrated Security=True";
+            var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+
+            services.AddIdentityCore<User>(options => { });
+
+
+
+            services.AddDbContext<AppUserDbContext>(option => option.UseSqlServer(connectionString,sql => sql.MigrationsAssembly(migrationAssembly)));
+            services.AddScoped<IUserStore<User>, UserOnlyStore<User, AppUserDbContext>>();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

@@ -13,9 +13,9 @@ namespace AspNetCoreIdentity.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
 
-        public HomeController(UserManager<IdentityUser> userManager)
+        public HomeController(UserManager<User> userManager)
         {
             _userManager = userManager;
         }
@@ -51,7 +51,7 @@ namespace AspNetCoreIdentity.Controllers
                 var user = await _userManager.FindByNameAsync(registerViewModel.UserName);
                 if (user == null)
                 {
-                    var result = await _userManager.CreateAsync(new IdentityUser()
+                    var result = await _userManager.CreateAsync(new User()
                     {
                         Id = Guid.NewGuid().ToString(),
                         UserName = registerViewModel.UserName

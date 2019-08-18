@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace AspNetCoreIdentity.Models
 {
-    public class User
+    public class User: IdentityUser
     {
-        public string Id { get; set; }
-        public string UserName { get; set; }
-        public string NormalizedUserName { get; set; }
-        public string PasswordHash { get; set; }
+        public string Locale { get; set; } = "en-US";
+
+        public string OrdId { get; set; }
     }
 }
