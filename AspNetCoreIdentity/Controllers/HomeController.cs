@@ -14,10 +14,12 @@ namespace AspNetCoreIdentity.Controllers
     public class HomeController : Controller
     {
         private readonly UserManager<User> _userManager;
+        private readonly IUserClaimsPrincipalFactory<User> _claimsPrincipalFactory;
 
-        public HomeController(UserManager<User> userManager)
+        public HomeController(UserManager<User> userManager, IUserClaimsPrincipalFactory<User> claimsPrincipalFactory)
         {
             _userManager = userManager;
+            _claimsPrincipalFactory = claimsPrincipalFactory;
         }
         public IActionResult Index()
         {
@@ -87,11 +89,14 @@ namespace AspNetCoreIdentity.Controllers
                 var user = await _userManager.FindByNameAsync(userViewModel.UserName);
                 if (user != null && await _userManager.CheckPasswordAsync(user,userViewModel.Password))
                 {
-                    var identity = new ClaimsIdentity("cookies");
-                    identity.AddClaim(new Claim(ClaimTypes.NameIdentifier,user.Id));
-                    identity.AddClaim(new Claim(ClaimTypes.Name,user.UserName));
+//                    var identity = new ClaimsIdentity("Identity.Application");
+//                    identity.AddClaim(new Claim(ClaimTypes.NameIdentifier,user.Id));
+//                    identity.AddClaim(new Claim(ClaimTypes.Name,user.UserName));
+                    //await HttpContext.SignInAsync("Identity.Application", new ClaimsPrincipal(identity));
 
-                    await HttpContext.SignInAsync("cookies", new ClaimsPrincipal(identity));
+
+                    var claimPrinciple = await _claimsPrincipalFactory.CreateAsync(user);
+                    await HttpContext.SignInAsync("Identity.Application", claimPrinciple);
 
                     return RedirectToAction("Index");
                 }

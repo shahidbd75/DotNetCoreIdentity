@@ -34,7 +34,7 @@ namespace AspNetCoreIdentity
 
 //            services.AddIdentityCore<User>(options => { });
 
-            services.AddAuthentication("cookies").AddCookie("cookies", (options) => options.LoginPath = "/Home/Login");
+           // services.AddAuthentication("cookies").AddCookie("cookies", (options) => options.LoginPath = "/Home/Login");
 
             //services.AddScoped<IUserStore<User>, UserRepository>();
             //services.AddScoped<IUserStore<IdentityUser>, CustomIdentityUserRepository>();
@@ -44,12 +44,14 @@ namespace AspNetCoreIdentity
             string connectionString ="Data Source=.;Initial Catalog=IdentityUserDb;Integrated Security=True";
             var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
-            services.AddIdentityCore<User>(options => { });
+            //services.AddIdentityCore<User>(options => { });
 
-
+            services.AddIdentity<User, IdentityRole>(options => { }).AddEntityFrameworkStores<AppUserDbContext>();
+            services.ConfigureApplicationCookie(config => { config.LoginPath = "/Home/Login"; });
 
             services.AddDbContext<AppUserDbContext>(option => option.UseSqlServer(connectionString,sql => sql.MigrationsAssembly(migrationAssembly)));
             services.AddScoped<IUserStore<User>, UserOnlyStore<User, AppUserDbContext>>();
+            services.AddScoped<IUserClaimsPrincipalFactory<User>, CustomUserClaimsPrincipalFactory>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
