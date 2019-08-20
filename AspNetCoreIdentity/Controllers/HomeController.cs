@@ -15,11 +15,14 @@ namespace AspNetCoreIdentity.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IUserClaimsPrincipalFactory<User> _claimsPrincipalFactory;
+        private readonly SignInManager<User> _signInManager;
 
-        public HomeController(UserManager<User> userManager, IUserClaimsPrincipalFactory<User> claimsPrincipalFactory)
+        public HomeController(UserManager<User> userManager, IUserClaimsPrincipalFactory<User> claimsPrincipalFactory,
+            SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _claimsPrincipalFactory = claimsPrincipalFactory;
+            _signInManager = signInManager;
         }
         public IActionResult Index()
         {
@@ -86,12 +89,13 @@ namespace AspNetCoreIdentity.Controllers
         {
             if (ModelState.IsValid)
             {
+                /**
                 var user = await _userManager.FindByNameAsync(userViewModel.UserName);
-                if (user != null && await _userManager.CheckPasswordAsync(user,userViewModel.Password))
+                if (user != null && await _userManager.CheckPasswordAsync(user, userViewModel.Password))
                 {
-//                    var identity = new ClaimsIdentity("Identity.Application");
-//                    identity.AddClaim(new Claim(ClaimTypes.NameIdentifier,user.Id));
-//                    identity.AddClaim(new Claim(ClaimTypes.Name,user.UserName));
+                    //                    var identity = new ClaimsIdentity("Identity.Application");
+                    //                    identity.AddClaim(new Claim(ClaimTypes.NameIdentifier,user.Id));
+                    //                    identity.AddClaim(new Claim(ClaimTypes.Name,user.UserName));
                     //await HttpContext.SignInAsync("Identity.Application", new ClaimsPrincipal(identity));
 
 
@@ -100,7 +104,19 @@ namespace AspNetCoreIdentity.Controllers
 
                     return RedirectToAction("Index");
                 }
+                **/
+                var loginResult = await 
+                    _signInManager.PasswordSignInAsync(userViewModel.UserName, userViewModel.Password, false, false);
+
+                if (loginResult.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
                 ModelState.AddModelError("","Invalid username or password");
+            }
+            else
+            {
+                ModelState.AddModelError("password", "Please check password validity");
             }
             return View();
         }
