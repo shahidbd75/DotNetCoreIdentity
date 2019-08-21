@@ -1,6 +1,8 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using AspNetCoreIdentity.DataAccess;
 using AspNetCoreIdentity.Models;
+using AspNetCoreIdentity.Provider;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -46,8 +48,24 @@ namespace AspNetCoreIdentity
 
             //services.AddIdentityCore<User>(options => { });
 
-            services.AddIdentity<User, IdentityRole>(options => { options.SignIn.RequireConfirmedEmail = true; }).AddEntityFrameworkStores<AppUserDbContext>().AddDefaultTokenProviders();
+            services.AddIdentity<User, IdentityRole>(options =>
+            {
+                //options.SignIn.RequireConfirmedEmail = true;
+                options.Tokens.EmailConfirmationTokenProvider = "EmailConf";
+            })
+                .AddEntityFrameworkStores<AppUserDbContext>().AddDefaultTokenProviders()
+                .AddTokenProvider<EmailTokenProvider<User>>("EmailConf");
             services.ConfigureApplicationCookie(config => { config.LoginPath = "/Home/Login"; });
+
+            services.Configure<DataProtectionTokenProviderOptions>(config =>
+            {
+                config.TokenLifespan = TimeSpan.FromHours(3);
+            });
+
+            services.Configure<EmailDataProtectionOptions>(config =>
+            {
+                config.TokenLifespan = TimeSpan.FromDays(2);
+            });
 
             services.AddDbContext<AppUserDbContext>(option => option.UseSqlServer(connectionString,sql => sql.MigrationsAssembly(migrationAssembly)));
             services.AddScoped<IUserStore<User>, UserOnlyStore<User, AppUserDbContext>>();
