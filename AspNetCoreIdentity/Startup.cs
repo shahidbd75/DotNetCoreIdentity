@@ -46,7 +46,7 @@ namespace AspNetCoreIdentity
 
             //services.AddIdentityCore<User>(options => { });
 
-            services.AddIdentity<User, IdentityRole>(options => { }).AddEntityFrameworkStores<AppUserDbContext>();
+            services.AddIdentity<User, IdentityRole>(options => { options.SignIn.RequireConfirmedEmail = true; }).AddEntityFrameworkStores<AppUserDbContext>().AddDefaultTokenProviders();
             services.ConfigureApplicationCookie(config => { config.LoginPath = "/Home/Login"; });
 
             services.AddDbContext<AppUserDbContext>(option => option.UseSqlServer(connectionString,sql => sql.MigrationsAssembly(migrationAssembly)));

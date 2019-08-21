@@ -15,5 +15,10 @@ namespace AspNetCoreIdentity.ViewModel
         [Compare("Password")]
         [DisplayName("Confirm Password")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        [EmailAddress]
+        [DisplayName("Email Address")]
+        public string Email { get; set; }
     }
 }

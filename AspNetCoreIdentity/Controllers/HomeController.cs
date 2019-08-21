@@ -42,42 +42,6 @@ namespace AspNetCoreIdentity.Controllers
         }
 
         [HttpGet]
-        public IActionResult Register()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel registerViewModel)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = await _userManager.FindByNameAsync(registerViewModel.UserName);
-                if (user == null)
-                {
-                    var result = await _userManager.CreateAsync(new User()
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        UserName = registerViewModel.UserName
-                    },registerViewModel.Password);
-
-                    if (!result.Succeeded)
-                    {
-                        foreach (var identityError in result.Errors)
-                        {
-                            ModelState.AddModelError(identityError.Code, identityError.Description);
-                        }
-                        return View(registerViewModel);
-                    }
-                }
-
-                return View("Success");
-            }
-            return View();
-        }
-
-        [HttpGet]
         public IActionResult Login()
         {
             return View();
@@ -89,7 +53,7 @@ namespace AspNetCoreIdentity.Controllers
         {
             if (ModelState.IsValid)
             {
-                /**
+
                 var user = await _userManager.FindByNameAsync(userViewModel.UserName);
                 if (user != null && await _userManager.CheckPasswordAsync(user, userViewModel.Password))
                 {
@@ -98,20 +62,33 @@ namespace AspNetCoreIdentity.Controllers
                     //                    identity.AddClaim(new Claim(ClaimTypes.Name,user.UserName));
                     //await HttpContext.SignInAsync("Identity.Application", new ClaimsPrincipal(identity));
 
-
+                    if (!await _userManager.IsEmailConfirmedAsync(user))
+                    {
+                        ModelState.AddModelError("", "Email is not confirmed");
+                        return View();
+                    }
                     var claimPrinciple = await _claimsPrincipalFactory.CreateAsync(user);
                     await HttpContext.SignInAsync("Identity.Application", claimPrinciple);
 
                     return RedirectToAction("Index");
                 }
-                **/
-                var loginResult = await 
-                    _signInManager.PasswordSignInAsync(userViewModel.UserName, userViewModel.Password, false, false);
 
-                if (loginResult.Succeeded)
-                {
-                    return RedirectToAction("Index");
-                }
+                /**    
+                     var loginResult = await 
+                         _signInManager.PasswordSignInAsync(userViewModel.UserName, userViewModel.Password, false, false);
+
+                     if (loginResult.Succeeded)
+                     {
+                         var user = await _userManager.FindByNameAsync(userViewModel.UserName);
+                         if (!await _userManager.IsEmailConfirmedAsync(user))
+                         {
+                             ModelState.AddModelError("","Email is not confirmed");
+                             return View();
+                         }
+                         return RedirectToAction("Index");
+                     }
+
+                **/
                 ModelState.AddModelError("","Invalid username or password");
             }
             else
