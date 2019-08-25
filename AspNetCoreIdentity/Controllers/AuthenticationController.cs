@@ -74,6 +74,7 @@ namespace AspNetCoreIdentity.Controllers
                         }
                     }
 
+                    await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.Now);
                     return View("Success");
                 }
                 ModelState.AddModelError("","Invalid Request");
@@ -96,7 +97,7 @@ namespace AspNetCoreIdentity.Controllers
                 var user = await _userManager.FindByNameAsync(registerViewModel.UserName);
                 if (user == null)
                 {
-                    user = new User()
+                    user = new User
                     {
                         Id = Guid.NewGuid().ToString(),
                         UserName = registerViewModel.UserName,
@@ -118,13 +119,16 @@ namespace AspNetCoreIdentity.Controllers
                     {
                         foreach (var identityError in result.Errors)
                         {
-                            ModelState.AddModelError(identityError.Code, identityError.Description);
+                            ModelState.AddModelError("", identityError.Description);
                         }
                         return View(registerViewModel);
                     }
+
+                    return View("Success");
                 }
 
-                return View("Success");
+                ModelState.AddModelError("username","This username already exist. try with another");
+                return View();
             }
             return View();
         }

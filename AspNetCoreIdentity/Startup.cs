@@ -52,9 +52,20 @@ namespace AspNetCoreIdentity
             {
                 //options.SignIn.RequireConfirmedEmail = true;
                 options.Tokens.EmailConfirmationTokenProvider = "EmailConf";
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = true;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredUniqueChars = 4;
+
+                options.User.RequireUniqueEmail = true;
+
+                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
+                options.Lockout.MaxFailedAccessAttempts = 3;
             })
                 .AddEntityFrameworkStores<AppUserDbContext>().AddDefaultTokenProviders()
-                .AddTokenProvider<EmailTokenProvider<User>>("EmailConf");
+                .AddTokenProvider<EmailTokenProvider<User>>("EmailConf")
+                .AddPasswordValidator<DoesNotContainPasswordValidator<User>>();
             services.ConfigureApplicationCookie(config => { config.LoginPath = "/Home/Login"; });
 
             services.Configure<DataProtectionTokenProviderOptions>(config =>

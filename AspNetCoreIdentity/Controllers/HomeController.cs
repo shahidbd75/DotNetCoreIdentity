@@ -55,22 +55,33 @@ namespace AspNetCoreIdentity.Controllers
             {
 
                 var user = await _userManager.FindByNameAsync(userViewModel.UserName);
-                if (user != null && await _userManager.CheckPasswordAsync(user, userViewModel.Password))
+                if (user != null && !await _userManager.IsLockedOutAsync(user))
                 {
                     //                    var identity = new ClaimsIdentity("Identity.Application");
                     //                    identity.AddClaim(new Claim(ClaimTypes.NameIdentifier,user.Id));
                     //                    identity.AddClaim(new Claim(ClaimTypes.Name,user.UserName));
                     //await HttpContext.SignInAsync("Identity.Application", new ClaimsPrincipal(identity));
-
-                    if (!await _userManager.IsEmailConfirmedAsync(user))
+                    if (await _userManager.CheckPasswordAsync(user, userViewModel.Password))
                     {
-                        ModelState.AddModelError("", "Email is not confirmed");
-                        return View();
-                    }
-                    var claimPrinciple = await _claimsPrincipalFactory.CreateAsync(user);
-                    await HttpContext.SignInAsync("Identity.Application", claimPrinciple);
+                        if (!await _userManager.IsEmailConfirmedAsync(user))
+                        {
+                            ModelState.AddModelError("", "Email is not confirmed");
+                            return View();
+                        }
 
-                    return RedirectToAction("Index");
+                        await _userManager.ResetAccessFailedCountAsync(user);
+                        var claimPrinciple = await _claimsPrincipalFactory.CreateAsync(user);
+                        await HttpContext.SignInAsync("Identity.Application", claimPrinciple);
+
+                        return RedirectToAction("Index");
+                    }
+
+                    await _userManager.AccessFailedAsync(user);
+                    if (await _userManager.IsLockedOutAsync(user))
+                    {
+                        ModelState.AddModelError("", "you have been locked for 1 min");
+                        // send mail through phone 
+                    }
                 }
 
                 /**    

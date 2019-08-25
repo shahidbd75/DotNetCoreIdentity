@@ -1,1 +1,1 @@
-https://localhost:44318/Authentication/ConfirmEmailAddress?token=CfDJ8LTk%2B8MpNaBIpA7fT4n0ubXgxsKGR769I7awMv%2B0lnVdnnXt7V4f%2FvqwGVw0Tkl7w3vm92rc0Unwg63fN3khxEFCNoMJUs7GsWiYkxF3KKwK2dnXGF1p7OhPYE9tWmRURO3t0sks4sWjVwTiPerast0xkplcCxt%2Fug%2BW0jGCKcgNPArWsY0xq1W9vYR7RHOtSlM8bwaj9ptAL97jvsiQGp0tj4mvdvAlUSnkDgSe4rVqt7LYjIWGcRHfzl0P6JgD8A%3D%3D&email=kanta.rahman@aci-bd.com
+https://localhost:44318/Authentication/ConfirmEmailAddress?token=379436&email=habib@gmail.com
