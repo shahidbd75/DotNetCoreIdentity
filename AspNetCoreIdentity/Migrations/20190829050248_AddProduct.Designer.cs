@@ -4,14 +4,16 @@ using AspNetCoreIdentity.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AspNetCoreIdentity.Migrations
 {
     [DbContext(typeof(AppUserDbContext))]
-    partial class AppUserDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190829050248_AddProduct")]
+    partial class AddProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,30 +31,6 @@ namespace AspNetCoreIdentity.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Organization");
-                });
-
-            modelBuilder.Entity("AspNetCoreIdentity.Models.Product", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("CreatedBy");
-
-                    b.Property<string>("ImageUrl");
-
-                    b.Property<string>("Name");
-
-                    b.Property<double>("Price");
-
-                    b.Property<string>("UpdatedBy");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedBy");
-
-                    b.HasIndex("UpdatedBy");
-
-                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("AspNetCoreIdentity.Models.User", b =>
@@ -222,17 +200,6 @@ namespace AspNetCoreIdentity.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("AspNetCoreIdentity.Models.Product", b =>
-                {
-                    b.HasOne("AspNetCoreIdentity.Models.User", "CreatedUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy");
-
-                    b.HasOne("AspNetCoreIdentity.Models.User", "UpdatedByUser")
-                        .WithMany()
-                        .HasForeignKey("UpdatedBy");
                 });
 
             modelBuilder.Entity("AspNetCoreIdentity.Models.User", b =>

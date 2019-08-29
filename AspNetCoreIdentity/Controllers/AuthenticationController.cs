@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AspNetCoreIdentity.Models;
 using AspNetCoreIdentity.ViewModel;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.V3.Pages.Account.Manage.Internal;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AspNetCoreIdentity.Controllers
@@ -147,6 +148,17 @@ namespace AspNetCoreIdentity.Controllers
                 }
             }
             return View("ErrorWithMessage", "Invalid User Request");
+        }
+
+        [HttpGet]
+        public IActionResult TowFactor()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult TowFactor(TwoFactorModel model)
+        {
+            return View();
         }
     }
 }

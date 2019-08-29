@@ -13,7 +13,7 @@ namespace AspNetCoreIdentity.Models
         {
             
         }
-
+        public DbSet<Product> Products { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
 

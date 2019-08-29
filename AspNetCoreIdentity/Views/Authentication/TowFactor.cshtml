@@ -1,0 +1,31 @@
+﻿@model AspNetCoreIdentity.ViewModel.TwoFactorModel
+
+@{
+    ViewData["Title"] = "TowFactor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Tow Factor Authentication(2SV/2FA)</h1>
+
+<h4>Please enter the code below</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="TowFactor">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Token" class="control-label"></label>
+                <input asp-for="Token" class="form-control" />
+                <span asp-validation-for="Token" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

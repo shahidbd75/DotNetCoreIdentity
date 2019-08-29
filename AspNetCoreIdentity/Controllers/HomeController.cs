@@ -70,6 +70,22 @@ namespace AspNetCoreIdentity.Controllers
                         }
 
                         await _userManager.ResetAccessFailedCountAsync(user);
+                        if (await _userManager.GetTwoFactorEnabledAsync(user))
+                        {
+                           var validProviders = await _userManager.GetValidTwoFactorProvidersAsync(user);
+                           if (validProviders.Contains("Email"))
+                           {
+                               var token = await _userManager.GenerateTwoFactorTokenAsync(user,"Email");
+
+                               System.IO.File.WriteAllText("2fvToken.txt",token);
+
+                               //await HttpContext.SignInAsync("Identity.Twofactor")
+
+                               RedirectToAction("TowFactor", "Authentication");
+                           }
+                        }
+
+
                         var claimPrinciple = await _claimsPrincipalFactory.CreateAsync(user);
                         await HttpContext.SignInAsync("Identity.Application", claimPrinciple);
 
